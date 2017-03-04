@@ -1,5 +1,135 @@
-Instructions to build/run:
-- install python
+---------------------------------------------------------------------------
+Some assumptions
+---------------------------------------------------------------------------
+
+- I used Django and its underlying relational database model, so my designs
+  were based on that. In particular, while in theory a student's set of 
+  answers might link back to a quiz _and_ each question _and_ the particular
+  answers for each multiple choice question, this would be horrible and 
+  messy and make a lot of unnecessary database edits. I chose to serialize
+  a dictionary for that instead...
+
+- It's pretty obvious that some multiple choice questions have multiple
+  correct answers. I chose to make these ones display as checkboxes and
+  the ones that only have one correct answer as radio buttons, but obviously
+  this would be easy to modify. I can understand that teachers might not
+  want to make it obvious that a question has only one answer.
+
+- Every MC question in the example has an "I'm not sure" answer, but I
+  didn't want to assume that every MC question _ever_ has one. In the model
+  I used, the "I'm not sure" answer is just a standard answer like any other
+  answer. But depending on requirements, we could instead set a flag in the
+  question to indicate that we should display an "I'm not sure" answer - and
+  this would mean we could randomise the order of all answers and still have
+  "I'm not sure" as the last answer.
+
+- In keeping with the previous assumption that not every question would have
+  an "I'm not sure" answer, I built in an option to randomise question order
+  display for the take-quiz page. But by default, it still displays the 
+  questions in the order they are added, because there may be "none/all of 
+  the above" or "unsure" answers.
+
+- Presumably we don't want people to be able to choose "I'm not sure" _and_ 
+  another answer/answers. I chose not to implement that in this case due to
+  the model design, but a "display-unsure" flag would make that easy to
+  validate.
+
+- For speed of implementation I assumed that quiz-setters will add questions
+  in order, and answers within those questions in order. These all display
+  in order of the auto-incrementing ID. It would be fairly easy to add in
+  ordering information for the questions/answers if we wanted to let people
+  move them around.
+
+- I assumed that all answers will just be text strings and not include extra  multimedia like images or videos. If those things need to be added, they
+  should be fine to _embed_ as-is - it's only the templates that would need
+  to be changed. But the details of actually storing uploaded media would 
+  probably need a little extra consideration (as blobs to the database, 
+  storing references to static material, etc).
+
+- My implementation forces all SA questions to display after the MC
+  questions. While this is the case in the example quiz, it might not be the
+  case for all quizzes (though I've seen many exams that have an MC section 
+  followed by a short answer or essay section). I did want to be able to mix
+  up MC and SA questions, but unintentionally messed that up - see things
+  for your attention, below.
+
+
+---------------------------------------------------------------------------
+My approach
+---------------------------------------------------------------------------
+
+I like working from the bottom up. I start on paper. I began by writing out
+some requirements, questions about the problem (things I would normally ask
+a client, but answered myself in this case), and basic details of what 
+classes I would need. I tried to look at the bigger picture and think ahead 
+- for example, how might I need to future-proof the application or make it 
+more generic? What kind of information am I going to store in the model to
+make it easier to look at the results later?
+
+I used Python and Django because it's the most recent framework I've worked 
+with. For something like this, which is really a prototype, it doesn't seem
+worth learning an unfamiliar language or framework. I've been out of tech
+for a while and haven't been making web apps, so it took me a bit longer to
+code than I'd have liked, but I was updating/refreshing my knowledge along
+the way.
+
+I don't necessarily think it's worth reinventing the wheel - if there's
+things out there that work, you should at least consider them. So instead of
+messing around with encoding/pickling my own data, I used a ready-made
+PickledObjectField to handle pickling objects in Django.
+
+I wrote my models first and tried to include enough information and
+relationships in them to encompass all of what I wanted to do with them 
+(quiz-taking and results analysis). My workflow tends to go along with the
+"user-flow", and it makes sense that people would need to be able to take a
+quiz before any results analysis can be done, so this is the order I wrote
+the rest of it in. I find this works well for discovering anything I've 
+missed from the model, too - once I get to analysis, the data is generally 
+there waiting to be manipulated, but the step where I actually put data in
+is where I might find unanswered questions or unconsidered issues.
+
+I also thought about making things work first, before making them pretty. So
+some of the code is a little messy - I organised some data, then I wanted to
+regroup it, and I used the data I'd already organised to make my new data
+structures. It could have been done in one loop instead, but (especially 
+given time constraints) I was more interested in getting it working than
+perfectly optimising it. Similarly, the HTML templates are not pretty - I 
+wanted to get useful information displaying in a way that kind of makes
+sense first. It can definitely be displayed in nicer/more useful ways, but
+once the data is getting to the screen, I can come back and manipulate it
+in whatever way I want. And at the moment, data is mostly added through the 
+shell - some of it can be done through the built-in Django admin interface,
+but as I have some validation in there that would be for a future custom
+admin interface, you can't add everything through the web interface. (I
+figured that every multiple choice question should have at least one correct
+answer.)
+
+
+---------------------------------------------------------------------------
+Things to draw attention to
+---------------------------------------------------------------------------
+
+I messed up when drawing out the model design. I wanted multiple choice 
+and short answer questions to both be some kind of Question, so the obvious
+thing to me was to make an abstract Question class. What I didn't consider
+was the underlying database model - the two subclasses went into their own
+tables with their own auto-incrementing primary keys, so there are key
+clashes I had to allow for. I wrote the models first, then the forms, views,
+and templates. I realised the issue when I got to the view, and by that time
+I decided I would just continue as-is for the purposes of this task. If I 
+were going to do this again using a relational database, given that there
+are only two types of questions and they're fairly simple in terms of what
+they contain (the multiple choice answers are foreign-keyed into the
+questions, not stored as part of the question), I would just have a Question
+class and a flag or boolean to determine what type of question it was.
+
+
+---------------------------------------------------------------------------
+Instructions to build/run
+---------------------------------------------------------------------------
+
+- install python 3 (however you would normally do it)
+- in shell:
 > pip install django
 > pip install django-picklefield
 > pip install django-mathfilters
@@ -7,7 +137,7 @@ Instructions to build/run:
 > python manage.py loaddata initial_data.json
 > python manage.py runserver
 
-go to 127.0.0.1:8000 in browser to load the app
+Go to 127.0.0.1:8000 in a browser to load the app
 
 http://127.0.0.1:8000/quiz/take/1/ to take the quiz (after loading initial data)
 http://127.0.0.1:8000/quiz/results/1/ to view analysis
