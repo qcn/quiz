@@ -1,0 +1,9 @@
+<form method="post" action="">
+    <table>
+        {% for form in qn_forms %}
+        {{ form }}
+        {% endfor %}
+    </table>
+
+    <input type="submit" value="Submit"> <input type="reset" value="Clear">
+</form>

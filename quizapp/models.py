@@ -16,7 +16,14 @@ VALIDATE_MC_TEXT = "Multiple choice question requires a correct answer"
 
 class Quiz(models.Model):
     title = models.CharField(max_length=MAX_TITLE_LENGTH)
-    
+
+    # oops - as noted in views.py
+    def get_mc_questions(self):
+        return self.mcquestion_set.all()
+
+    def get_sa_questions(self):
+        return self.saquestion_set.all()
+
     def __str__(self):
         return self.title
 
