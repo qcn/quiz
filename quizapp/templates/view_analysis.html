@@ -56,14 +56,16 @@
 
     {% for qn in sa_qns %}
     <h3>{{ qn.text }}</h3>
+        <p>A nice way to show this would be to make a word cloud of all the
+           responses (to indicate what concepts students are thinking about,
+           for example), and then the ability to download all the responses.
+           But for now, here they are:</p>
         <ul>
         {% for answer in qn.answers %}
             <li>{{ answer }}</li>
         {% endfor %}
         </ul>
     {% endfor %}
-    word cloud
-    download all responses
     
     </body>
 </html>

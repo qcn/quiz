@@ -53,6 +53,9 @@ Some assumptions
   up MC and SA questions, but unintentionally messed that up - see things
   for your attention, below.
 
+- Small implementation detail: the short answer question response doesn't
+  currently maintain newlines.
+
 
 ---------------------------------------------------------------------------
 My approach
