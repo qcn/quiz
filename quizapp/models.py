@@ -24,6 +24,9 @@ class Quiz(models.Model):
     def get_sa_questions(self):
         return self.saquestion_set.all()
 
+    def get_answersets(self):
+        return self.quizanswerset_set.all()
+
     def __str__(self):
         return self.title
 

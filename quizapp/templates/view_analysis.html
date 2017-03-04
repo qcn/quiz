@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    </head>
+    
+    <body>
+    <h1>{{ qz.title }}: Results</h1>
+    <h3>Total responses: {{ responses }}</h3>
+
+    <h2>Multiple choice questions</h2>
+
+    {% for qn in mc_qns %}
+    <h3>{{ qn.text }}</h3>
+    {% endfor %}
+    pie chart
+
+    <h2>Short answer questions</h2>
+
+    {% for qn in sa_qns %}
+    <h3>{{ qn.text }}</h3>
+        {% for answer in qn.answers %}
+        <p>{{ answer }}</p>
+        {% endfor %}
+    {% endfor %}
+    word cloud
+    download all responses
+    
+    </body>
+</html>
