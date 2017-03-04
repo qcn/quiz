@@ -1,4 +1,7 @@
-<form method="post" action="">
+<h1>Quiz - {{ qz.title }}</h1>
+
+<form method="post" action="{% url 'quizapp:submit' qz.id %}">
+    {% csrf_token %}
     <table>
         {% for form in qn_forms %}
         {{ form }}
