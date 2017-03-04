@@ -1,0 +1,9 @@
+Instructions to build/run:
+- install python
+> pip install django
+> pip install django-picklefield
+> python manage.py migrate
+> python manage.py loaddata initial_data.json
+> python manage.py runserver
+
+go to 127.0.0.1:8000 in browser to load the app
