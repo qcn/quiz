@@ -1,3 +1,5 @@
+{% load mathfilters %}
+
 <html>
     <head>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -11,6 +13,15 @@
 
     {% for qn in mc_qns %}
     <h3>{{ qn.text }}</h3>
+        <ul>
+        {% for ans in qn.answers %}
+            <li>
+            {% if ans.correct %}<strong>{%endif%}
+            {{ans.text}} - {{ans.count}}
+            ({{ans.count|div:responses|mul:100}} %)
+            {% if ans.correct %}</strong>{%endif%}</li>
+        {% endfor %}
+        </ul>
     {% endfor %}
     pie chart
 
@@ -18,9 +29,11 @@
 
     {% for qn in sa_qns %}
     <h3>{{ qn.text }}</h3>
+        <ul>
         {% for answer in qn.answers %}
-        <p>{{ answer }}</p>
+            <li>{{ answer }}</li>
         {% endfor %}
+        </ul>
     {% endfor %}
     word cloud
     download all responses

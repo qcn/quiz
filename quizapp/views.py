@@ -90,6 +90,22 @@ def view_analysis(request, **kwargs):
                 this_qn[answer] += 1
         mc_answers[qn.id] = this_qn
 
+    # regroup multiple choice responses for template
+    mc_to_template = []
+    # TODO: roll this into previous loop
+    for qn in mc_qns:
+        single_ans = [{ 'ans_id': ans.id,
+                        'text': ans.text,
+                        'short_text': ans.short_text,
+                        'correct': ans.correct,
+                        'count': mc_answers[qn.id][ans.id]}
+                      for ans in qn.get_answers()]
+        single_qn = {   'qn_id': qn.id,
+                        'text': qn.text,
+                        'answers': single_ans,
+                    }
+        mc_to_template += [single_qn]
+
     # Concatenate all the short answer responses
 
     sa_answers = {}
@@ -108,7 +124,6 @@ def view_analysis(request, **kwargs):
                     {
                         'qz': qz,
                         'responses': len(answersets),
-                        'mc_qns': mc_qns,
-                        'mc_answers': mc_answers,
+                        'mc_qns': mc_to_template,
                         'sa_qns': sa_to_template,
                     })

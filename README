@@ -2,8 +2,12 @@ Instructions to build/run:
 - install python
 > pip install django
 > pip install django-picklefield
+> pip install django-mathfilters
 > python manage.py migrate
 > python manage.py loaddata initial_data.json
 > python manage.py runserver
 
 go to 127.0.0.1:8000 in browser to load the app
+
+http://127.0.0.1:8000/quiz/take/1/ to take the quiz (after loading initial data)
+http://127.0.0.1:8000/quiz/results/1/ to view analysis
