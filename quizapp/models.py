@@ -1,5 +1,6 @@
 from django.db import models
 from django import forms
+from picklefield.fields import PickledObjectField
 
 # Create your models here.
 
@@ -45,6 +46,12 @@ class MCQuestion(Question):
             return self.mcanswer_set.order_by('?')
         return self.mcanswer_set.all()
 
+    # find out if this is a single or multi-answer question
+    def has_multiple_answers(self):
+        if self.mcanswer_set.filter(correct=True).count() > 1:
+            return True
+        return False
+
     # make sure a multiple choice question has at least one correct answer
     def clean(self):
         super(MCQuestion, self).clean()
@@ -76,3 +83,24 @@ class MCAnswer(models.Model):
     def __str__(self):
         return self.text
 
+
+
+class QuizAnswerSet(models.Model):
+    qz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    # In a 'real' situation, we'd also link this to a user account.
+    # In this case, we're not bothering with users, so treat each
+    # answer set as by a different student.
+
+    # Store the answer set as an object. We don't want to mess around
+    # with a different set of user answers for every question in every
+    # quiz. A dictionary tying the user's answers to each question will
+    # be fine.
+    # Using a PickleField because there isn't a nice default way to store
+    # a dictionary in a database. Considered JSON but would have to convert
+    # integer strings back into ints, and that'd be messier/pull in a lot
+    # of overheads.
+    # Format: dictionary
+    #   - key = question ID
+    #   - value for MC question: list of answer IDs selected
+    #   - value for SA question: answer string
+    answers = PickledObjectField()
