@@ -40,7 +40,8 @@ Some assumptions
   ordering information for the questions/answers if we wanted to let people
   move them around.
 
-- I assumed that all answers will just be text strings and not include extra  multimedia like images or videos. If those things need to be added, they
+- I assumed that all answers will just be text strings and not include extra  
+  multimedia like images or videos. If those things need to be added, they
   should be fine to _embed_ as-is - it's only the templates that would need
   to be changed. But the details of actually storing uploaded media would 
   probably need a little extra consideration (as blobs to the database, 
