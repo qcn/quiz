@@ -2,6 +2,7 @@
 
 <html>
     <head>
+        <title>Analysis - {{qz.title}} Quiz</title>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
         <script type="text/javascript">
@@ -43,7 +44,7 @@
             <li>
             {% if ans.correct %}<strong>{%endif%}
             {{ans.text}} - {{ans.count}}
-            ({{ans.count|div:responses|mul:100}} %)
+            ({{ans.count|div:responses|mul:100|floatformat:"0"}}%)
             {% if ans.correct %}</strong>{%endif%}</li>
         {% endfor %}
         </ul>

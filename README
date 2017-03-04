@@ -2,6 +2,10 @@
 Some assumptions
 ---------------------------------------------------------------------------
 
+- Key assumption: I assumed you're more interested in my ability to code a
+  whole system and get the backend working than making it look pretty. 
+  Nothing is pretty! But it works.
+
 - I used Django and its underlying relational database model, so my designs
   were based on that. In particular, while in theory a student's set of 
   answers might link back to a quiz _and_ each question _and_ the particular
