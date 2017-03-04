@@ -1,5 +1,5 @@
 from django.db import models
-from django.db import forms
+from django import forms
 
 # Create your models here.
 
@@ -15,6 +15,9 @@ VALIDATE_MC_TEXT = "Multiple choice question requires a correct answer"
 
 class Quiz(models.Model):
     title = models.CharField(max_length=MAX_TITLE_LENGTH)
+    
+    def __str__(self):
+        return self.title
 
 
 class Question(models.Model):
@@ -25,6 +28,9 @@ class Question(models.Model):
         abstract = True # wrapper for an actual question
         # assume questions are added in order
         ordering = ['id']
+
+    def __str__(self):
+        return self.text
 
 
 # multiple choice question
@@ -66,3 +72,7 @@ class MCAnswer(models.Model):
         # for now, assume answers are added in order. Add an ordering
         # field if this isn't the case.
         ordering = ['id']
+
+    def __str__(self):
+        return self.text
+
