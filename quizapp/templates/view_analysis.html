@@ -3,6 +3,31 @@
 <html>
     <head>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+        <script type="text/javascript">
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
+
+            function drawChart() {
+
+            {% for qn in mc_qns %}
+            {% with qn.answers as answers %}
+                var data{{qn.qn_id}} = google.visualization.arrayToDataTable([
+                ['Answers', 'Respondents'],
+                {% for answer in answers %}
+                ['{{answer.short_text}}', {{answer.count}}],
+                {% endfor %}
+                ]);
+            {% endwith %}
+
+
+            var chart{{qn.qn_id}} = new google.visualization.PieChart(document.getElementById('piechart{{qn.qn_id}}'));
+            chart{{qn.qn_id}}.draw(data{{qn.qn_id}});
+
+            {% endfor %}
+
+            }
+        </script>
     </head>
     
     <body>
@@ -22,8 +47,10 @@
             {% if ans.correct %}</strong>{%endif%}</li>
         {% endfor %}
         </ul>
+
+        <div id="piechart{{qn.qn_id}}" style="width: 900px; height:500px;">
+        </div>
     {% endfor %}
-    pie chart
 
     <h2>Short answer questions</h2>
 
